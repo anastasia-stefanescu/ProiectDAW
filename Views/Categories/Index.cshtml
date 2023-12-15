@@ -4,23 +4,28 @@
 }
 
 <h2>@ViewBag.Title</h2>
+<hr />
 <br />
 
-@if (TempData.ContainsKey("message"))
+@if (ViewBag.Message != null)
 {
-    <h1>@ViewBag.message</h1>
+    <h2 class="@ViewBag.Alert p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
 }
 
-<a href="/Subjects/Index">Inapoi la subiectele de discutie</a>
-<br />
 <br />
 
 @foreach (var category in ViewBag.Categories)
 {
-    @Html.Label("CategoryName", "Denumire categorie")
-    <p>@category.CategoryName</p>
-    <a class="btn alert-success" href="/Categories/Show/@category.Id">Afisare categorie</a>
-    <a class="btn alert-success" href="/Categories/Edit/@category.Id">Editare categorie</a>
+    <h4>@category.CategoryName</h4>
+    <div class="d-flex flex-row">
+        <a class="btn alert-success" href="/Categories/Show/@category.Id">Afisare categorie</a>
+        <a class="btn alert-success" href="/Categories/Edit/@category.Id">Editare categorie</a>
+        <form method="post" action="/Categories/Delete/@category.Id">
+
+            <button class="btn btn-danger" type="submit">Sterge categoria</button>
+
+        </form>
+    </div>
     <br />
     <hr />
     <br />

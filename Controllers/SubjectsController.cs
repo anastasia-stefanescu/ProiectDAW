@@ -36,22 +36,6 @@ namespace Proiect.Controllers
         // HttpGet implicit
         //[Authorize(Roles = "User,Editor,Admin")]
 
-        public IActionResult Index()
-        {
-            var subjects = db.Subjects.Include("Category").Include("User");
-
-            // ViewBag.OriceDenumireSugestiva
-            ViewBag.Subjects = subjects;
-
-            if (TempData.ContainsKey("message"))
-            {
-                ViewBag.Message = TempData["message"];
-                ViewBag.Alert = TempData["messageType"];
-            }
-
-            return View();
-        }
-
         // Se afiseaza un singur articol in functie de id-ul sau 
         // impreuna cu categoria din care face parte
         // In plus sunt preluate si toate comentariile asociate unui articol
@@ -68,6 +52,12 @@ namespace Proiect.Controllers
                                          .Where(subject => subject.Id == id)
                                          .First();
 
+
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.Message = TempData["message"];
+                ViewBag.Alert = TempData["messageType"];
+            }
 
             SetAccessRights();
 
@@ -138,7 +128,7 @@ namespace Proiect.Controllers
         public IActionResult New()
         {
             Subject subject = new Subject();
-
+           
             // Se preia lista de categorii cu ajutorul metodei GetAllCategories()
             subject.Categ = GetAllCategories();
 
@@ -167,7 +157,7 @@ namespace Proiect.Controllers
                 db.SaveChanges();
                 TempData["message"] = "Subiectul a fost adaugat";
                 TempData["messageType"] = "alert-success";
-                return RedirectToAction("Index");
+                return Redirect("/Categories/Show/" + subject.CategoryId);
             }
             else
             {
@@ -209,7 +199,7 @@ namespace Proiect.Controllers
           {
                 TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unui subiect care nu va apartine";
                 TempData["messageType"] = "alert-danger";
-                return RedirectToAction("Index");
+                return Redirect("/Categories/Show/" + subject.CategoryId);
           }
 
         }
@@ -235,13 +225,13 @@ namespace Proiect.Controllers
                 TempData["message"] = "Subiectul a fost modificat";
                 TempData["messageType"] = "alert-success";
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return Redirect("/Categories/Show/" + subject.CategoryId);
                 }
                 else
                 {
                     TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unui subiect care nu va apartine";
                     TempData["messageType"] = "alert-danger";
-                    return RedirectToAction("Index");
+                    return Redirect("/Categories/Show/" + subject.CategoryId);
                 }
             }
             else
@@ -271,13 +261,13 @@ namespace Proiect.Controllers
                 db.SaveChanges();
                 TempData["message"] = "Subiectul a fost sters";
                 TempData["messageType"] = "alert-success";
-                return RedirectToAction("Index");
+                return Redirect("/Categories/Show/" + subject.CategoryId);
             }
             else
             {
                 TempData["message"] = "Nu aveti dreptul sa stergeti un subiect care nu va apartine";
                 TempData["messageType"] = "alert-danger";
-                return RedirectToAction("Index");
+                return Redirect("/Categories/Show/" + subject.CategoryId);
             }
         }
 

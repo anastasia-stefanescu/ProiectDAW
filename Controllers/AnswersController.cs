@@ -66,7 +66,7 @@ namespace Proiect.Controllers
             {
                 TempData["message"] = "Nu aveti dreptul sa stergeti un raspuns care nu va apartine";
                 TempData["messageType"] = "alert-danger";
-                return Redirect("/Subjects/Index");
+                return Redirect("/Subjects/Show/" + ans.SubjectId);
             }
         }
 
@@ -85,7 +85,7 @@ namespace Proiect.Controllers
             {
                 TempData["message"] = "Nu aveti dreptul sa editati un raspuns care nu va apartine";
                 TempData["messageType"] = "alert-danger";
-                return Redirect("/Subjects/Index");
+                return Redirect("/Subjects/Show/" + ans.SubjectId);
             }
         }
 
@@ -111,7 +111,7 @@ namespace Proiect.Controllers
                 {
                     TempData["message"] = "Nu aveti dreptul sa editati un raspuns care nu va apartine";
                     TempData["messageType"] = "alert-danger";
-                    return Redirect("/Subjects/Index");
+                    return Redirect("/Subjects/Show/" + ans.SubjectId);
                 }
             }
             else

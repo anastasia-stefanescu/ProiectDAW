@@ -1,24 +1,35 @@
 ﻿@model Proiect.Models.Category
-@{
-    ViewBag.Title = "Afisare categorie";
-}
 
 
-<h2>@ViewBag.Title</h2>
+<h3>@Model.CategoryName</h3>
+
 
 <br />
-
-<p>@Model.CategoryName</p>
-
-
-<form method="post" action="/Categories/Delete/@Model.Id">
-
-    <button class="btn btn-danger" type="submit">Sterge categoria</button>
-
-</form>
-<br />
-<a class="btn alert-success" href="/Categories/Index/">Afisare lista categorii</a>
+<a class="btn alert-success" href="/Categories/Index/">Inapoi la categorii</a>
+<a class="btn btn-outline-success" href="/Subjects/New">Adauga subiect</a>
 
 <br />
 <hr />
 <br />
+
+@if (ViewBag.Message != null)
+{
+    <h2 class="@ViewBag.Alert p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
+}
+
+@foreach (Proiect.Models.Subject subject in Model.Subjects)
+{
+    <div class="card">
+
+        @Html.Partial("SubjectInfo", subject)
+
+        <a class="btn btn-success" href="/Subjects/Show/@subject.Id">Afisare subiect</a>
+
+
+       
+
+    </div>
+
+    <br />
+    <br />
+}

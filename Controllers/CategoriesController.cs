@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Proiect.Data;
 using Proiect.Models;
 
@@ -26,6 +27,7 @@ namespace Proiect.Controllers
             if (TempData.ContainsKey("message"))
             {
                 ViewBag.message = TempData["message"].ToString();
+                ViewBag.Alert = TempData["messageType"];
             }
 
             var categories = from category in db.Categories
@@ -37,7 +39,16 @@ namespace Proiect.Controllers
 
         public ActionResult Show(int id)
         {
-            Category category = db.Categories.Find(id);
+            if (TempData.ContainsKey("message"))
+            {
+                ViewBag.message = TempData["message"].ToString();
+                ViewBag.Alert = TempData["messageType"];
+            }
+
+            Category category = db.Categories.Include("Subjects")
+                                         .Include("Subjects.User")
+                                         .Where(category => category.Id == id)
+                                         .First();
             return View(category);
         }
 
@@ -96,7 +107,9 @@ namespace Proiect.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
-            Category category = db.Categories.Find(id);
+            Category category = db.Categories.Include("Subjects")
+                                         .Where(category => category.Id == id)
+                                         .First();
             db.Categories.Remove(category);
             TempData["message"] = "Categoria a fost stearsa";
             db.SaveChanges();

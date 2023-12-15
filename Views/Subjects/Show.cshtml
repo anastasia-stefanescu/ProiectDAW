@@ -3,9 +3,7 @@
 @* Afisarea unui subiect impreuna cu categoria din care face *@
 <div class="d-flex justify-content-center">
 
-    <a class="btn btn-outline-success" href="/Subjects/Index/">Afisare subiecte</a>
-
-    <a class="btn btn-outline-success" href="/Subjects/New">Adauga subiect</a>
+    <a class="btn alert-success" href="/Categories/Show/@Model.CategoryId">Inapoi la @Model.Category.CategoryName</a>
 
 </div>
 
@@ -61,6 +59,10 @@
 </div>
 
 <br />
+@if (ViewBag.Message != null)
+{
+    <h2 class="@ViewBag.Alert p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
+}
 <br />
 
 @* Afisare raspunsuri impreuna cu butoanele de editare si stergere *@
@@ -77,6 +79,7 @@
 
                     @* de facut butoane cu tagurile inainte de continut *@
 
+                    <strong>@ans.User.UserName</strong>
                     <p>@ans.Content</p>
                     <small>@ans.Date</small>
 
