@@ -27,28 +27,28 @@ namespace Proiect.Controllers
             _roleManager = roleManager;
         }
 
-/*
-        //de vazut daca e corect
-        // Adaugarea unui comentariu asociat unui articol in baza de date
-        [Authorize(Roles = "User,Admin")]
-        [HttpPost]
-        public IActionResult New(Answer ans)
-        {
-            ans.Date = DateTime.Now;
+        /*
+                //de vazut daca e corect
+                // Adaugarea unui comentariu asociat unui articol in baza de date
+                [Authorize(Roles = "User,Admin")]
+                [HttpPost]
+                public IActionResult New(Answer ans)
+                {
+                    ans.Date = DateTime.Now;
 
-            if (ModelState.IsValid)
-            {
-                db.Answers.Add(ans);
-                db.SaveChanges();
-                return Redirect("/Subjects/Show/" + ans.SubjectId);
-            }
+                    if (ModelState.IsValid)
+                    {
+                        db.Answers.Add(ans);
+                        db.SaveChanges();
+                        return Redirect("/Subjects/Show/" + ans.SubjectId);
+                    }
 
-            else
-            {
-                return Redirect("/Subjects/Show/" + ans.SubjectId);
-            }
+                    else
+                    {
+                        return Redirect("/Subjects/Show/" + ans.SubjectId);
+                    }
 
-        }*/
+                }*/
 
         // Stergerea unui raspuns asociat unui subiect din baza de date
         [HttpPost]

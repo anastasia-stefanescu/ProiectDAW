@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Humanizer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Proiect.Data;
 using Proiect.Models;
+using static NuGet.Packaging.PackagingConstants;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -49,7 +52,107 @@ namespace Proiect.Controllers
                                          .Include("Subjects.User")
                                          .Where(category => category.Id == id)
                                          .First();
-            return View(category);
+            var subjectsofCateg = category.Subjects;
+
+
+            //////////////////////////////////////////////////////
+            ///Partea de cautare
+            ///
+
+            var search = "";
+
+            // MOTOR DE CAUTARE
+            if (Convert.ToString(HttpContext.Request.Query["search"]) != null)
+            {
+                // eliminam spatiile libere
+                search = Convert.ToString(HttpContext.Request.Query["search"]).Trim();
+
+                // Cautare in articol (Title si Content)
+                List<int> subjectIds = subjectsofCateg.Where(
+                                                 sub => sub.Title.Contains(search)
+                                                 || sub.Content.Contains(search)
+                                                            ).Select(a => a.Id).ToList();
+
+                // Cautare in raspunsuri
+                //selectam raspunsurile
+                var allAnswers = db.Answers;
+                var answersOfSubj = db.Answers.Where(
+                                            answer => subjectsofCateg.Contains(answer.Subject)
+                                            ).ToList();
+
+                List<int> subjectIdsOfAnswersWithSearchString = answersOfSubj
+                .Where
+                (
+                c => c.Content.Contains(search)
+                ).Select(c => (int)c.SubjectId).ToList();
+
+                // Se formeaza o singura lista formata din toate id-urile selectate anterior
+                List<int> mergedIds = subjectIds.Union(subjectIdsOfAnswersWithSearchString).ToList();
+
+                // Lista subiect care contin cuvantul cautat
+                // fie in articol -> Title si Content
+                // fie in raspunsuri -> Content
+
+                //aici de vazut!!!!!
+                subjectsofCateg = category.Subjects
+                                    .Where(subject => mergedIds.Contains(subject.Id))
+                                    .OrderBy(s => s.Date)
+                                    //.Include(s => s.Category)
+                                    //.Include(s => s.User)
+                                    .ToList();
+            }
+            ViewBag.SearchString = search;
+
+
+            // AFISARE PAGINATA
+
+            // Alegem sa afisam 3 articole pe pagina
+            int _perPage = 3;
+
+            // Fiind un numar variabil de subiecte, verificam de fiecare data utilizand metoda Count()
+            int totalItems = subjectsofCateg.Count();
+
+            // Se preia pagina curenta din View-ul asociat
+            // Numarul paginii este valoarea parametrului page din ruta
+            // /Category/Show?page=valoare
+            var currentPage = Convert.ToInt32(HttpContext.Request.Query["page"]);
+
+            // Pentru prima pagina offsetul o sa fie zero
+            // Pentru pagina 2 o sa fie 3
+            // Asadar offsetul este egal cu numarul de articole care au fost deja afisate pe paginile anterioare
+            var offset = 0;
+
+            // Se calculeaza offsetul in functie de numarul paginii la care suntem
+            if (!currentPage.Equals(0))
+            {
+                offset = (currentPage - 1) * _perPage;
+            }
+
+            // Se preiau articolele corespunzatoare pentru fiecare pagina la care ne aflam
+            // in functie de offset
+            var paginatedSubjects = subjectsofCateg.Skip(offset).Take(_perPage);
+
+            // Preluam numarul ultimei pagini
+            ViewBag.lastPage = Math.Ceiling((float)totalItems / (float)_perPage);
+
+            // Trimitem articolele cu ajutorul unui ViewBag
+            //catre View-ul corespunzator
+            ViewBag.Subjects = paginatedSubjects;
+
+            //////end PAGINARE
+
+            // ATENTIE AICI AM SCHIMBAT RUTA!!!!!!
+            if (search != "")
+            {
+                ViewBag.PaginationBaseUrl = "/Categories/Show/" + id + "?search=" + search + "&page";
+            }
+            else
+            {
+                ViewBag.PaginationBaseUrl = "/Categories/Show/" + id +"?page";
+            }
+
+            /////////
+            return View(category); 
         }
 
         [Authorize(Roles = "Admin")]

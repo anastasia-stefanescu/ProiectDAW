@@ -28,7 +28,7 @@ namespace Proiect.Controllers
         }
 
 
-        
+
 
         // Se afiseaza lista tuturor articolelor impreuna cu categoria 
         // din care fac parte
@@ -46,7 +46,6 @@ namespace Proiect.Controllers
         {
             Subject subject = db.Subjects.Include("Category")
                                          .Include("User")
-                                         //.Include("Tags") //adaugat
                                          .Include("Answers")
                                          .Include("Answers.User")
                                          .Where(subject => subject.Id == id)
@@ -82,7 +81,6 @@ namespace Proiect.Controllers
             {
                 Subject subject = db.Subjects.Include("Category")
                                          .Include("User")
-                                         //.Include("Tags") //adaugat
                                          .Include("Answers")
                                          .Include("Answers.User")
                                .Where(subject => subject.Id == answer.SubjectId)
@@ -95,30 +93,6 @@ namespace Proiect.Controllers
             }
         }
 
-        // Adaugarea unui tag asociat unui subiect in baza de date
-        //[HttpPost]
-        //public IActionResult Show([FromForm] Tag tag)
-        //{
-        //    try
-        //    {
-        //        db.Tags.Add(tag);
-        //        db.SaveChanges();
-        //        return Redirect("/Subjects/Show/" + tag.SubjectId);
-        //    }
-
-        //    catch (Exception ex)
-        //    {
-        //        Subject subject = db.Subjects.Include("Category").Include("Tags").Include("answers")
-        //                       .Where(subject => subject.Id == tag.SubjectId)
-        //                       .First();
-
-        //        //return Redirect("/Articles/Show/" + comm.ArticleId);
-
-        //        return View(subject);
-        //    }
-        //}
-
-
         // Se afiseaza formularul in care se vor completa datele unui subiect
         // impreuna cu selectarea categoriei din care face parte si tagurile
         // Doar utilizatorii cu rolul de Utilizator inregistrat sau Admin pot adauga articole in platforma
@@ -128,12 +102,9 @@ namespace Proiect.Controllers
         public IActionResult New()
         {
             Subject subject = new Subject();
-           
+
             // Se preia lista de categorii cu ajutorul metodei GetAllCategories()
             subject.Categ = GetAllCategories();
-
-            //TO DO: cum initializam lista de taguri?
-            //subject.Tags = GetAllTags();
 
             return View(subject);
         }
@@ -186,7 +157,6 @@ namespace Proiect.Controllers
                                         .First();
 
             subject.Categ = GetAllCategories();
-            // subject.Tgs = GetAllTags();
 
             //de adaugat tag
 
@@ -195,12 +165,12 @@ namespace Proiect.Controllers
                 return View(subject);
             }
 
-          else
-          {
+            else
+            {
                 TempData["message"] = "Nu aveti dreptul sa faceti modificari asupra unui subiect care nu va apartine";
                 TempData["messageType"] = "alert-danger";
                 return Redirect("/Categories/Show/" + subject.CategoryId);
-          }
+            }
 
         }
 
@@ -212,20 +182,19 @@ namespace Proiect.Controllers
         {
             Subject subject = db.Subjects.Find(id);
             requestSubject.Categ = GetAllCategories();
-            //requestSubject.Tgs = GetAllTags();
 
             if (ModelState.IsValid)
             {
                 if (subject.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
                 {
-                subject.Title = requestSubject.Title;
-                subject.Content = requestSubject.Content;
-                //taguri
-                subject.CategoryId = requestSubject.CategoryId;
-                TempData["message"] = "Subiectul a fost modificat";
-                TempData["messageType"] = "alert-success";
-                db.SaveChanges();
-                return Redirect("/Categories/Show/" + subject.CategoryId);
+                    subject.Title = requestSubject.Title;
+                    subject.Content = requestSubject.Content;
+                    //taguri
+                    subject.CategoryId = requestSubject.CategoryId;
+                    TempData["message"] = "Subiectul a fost modificat";
+                    TempData["messageType"] = "alert-success";
+                    db.SaveChanges();
+                    return Redirect("/Categories/Show/" + subject.CategoryId);
                 }
                 else
                 {
@@ -240,6 +209,69 @@ namespace Proiect.Controllers
                 return View(requestSubject);
             }
         }
+
+
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult ChangeCategory(int id)
+        {
+
+            Subject subject = db.Subjects.Include("Category")
+                                        .Where(subject => subject.Id == id)
+                                        .First();
+
+            subject.Categ = GetAllCategories();
+
+            if (User.IsInRole("Admin"))
+            {
+                return View(subject);
+            }
+
+            else
+            {
+                TempData["message"] = "Nu aveti dreptul sa schimbati categoria daca nu sunteti admin";
+                TempData["messageType"] = "alert-danger";
+                return Redirect("/Subject/Show/" + subject.Id);
+            }
+
+        }
+
+        // Se adauga subiectul de discutie modificat in baza de date
+        // Verificam rolul utilizatorilor care au dreptul sa editeze (Creatorul sau Admin)        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public IActionResult ChangeCategory(int id, Subject requestSubject)
+        {
+            Subject subject = db.Subjects.Find(id);
+            requestSubject.Categ = GetAllCategories();
+
+            if (ModelState.IsValid)
+            {
+                if (User.IsInRole("Admin"))
+                {
+                    subject.Title = subject.Title;
+                    subject.Content = subject.Content;
+                    subject.CategoryId = requestSubject.CategoryId;
+                    TempData["message"] = "Subiectul a fost modificat";
+                    TempData["messageType"] = "alert-success";
+                    db.SaveChanges();
+                    return Redirect("/Subject/Show/" + subject.Id);
+                }
+                else
+                {
+                    TempData["message"] = "Nu aveti dreptul sa schimbati categoria daca nu sunteti admin";
+                    TempData["messageType"] = "alert-danger";
+                    return Redirect("/Subject/Show/" + subject.Id);
+                }
+            }
+            else
+            {
+                requestSubject.Categ = GetAllCategories();
+                return View(requestSubject);
+            }
+        }
+
+
 
 
         // Se sterge un articol din baza de date

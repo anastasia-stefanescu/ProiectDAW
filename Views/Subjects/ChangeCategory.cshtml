@@ -5,26 +5,26 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6 offset-3">
-            @using (Html.BeginForm(actionName: "Edit", controllerName: "Subjects",
-                method: FormMethod.Post,
-                routeValues: new { id = Model.Id }))
+            @using (Html.BeginForm(actionName: "ChangeCategory", controllerName: "Subjects",
+               method: FormMethod.Post,
+               routeValues: new { id = Model.Id }))
             {
                 /* @Html.HiddenFor(m => m.Id)  */
 
 
-                @Html.Label("Title", "Titlu Subiect")
-                <br />
-                @Html.EditorFor(m => m.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @*@Html.Label("Title", "Titlu Subiect")
+                <br />*@
+                @*@Html.EditorFor(m => m.Title, new { htmlAttributes = new { @class = "form-control" } })*@
 
-                @Html.ValidationMessageFor(m => m.Title, null, new { @class = "text-danger" })
-                <br /><br />
+                @*@Html.ValidationMessageFor(m => m.Title, null, new { @class = "text-danger" })
+                <br /><br />*@
 
-                @Html.Label("Content", "Descriere Subiect")
-                <br />
-                @Html.Editor("Content", new { htmlAttributes = new { @class = "form-control" } })
+                @*@Html.Label("Content", "Descriere Subiect")
+                <br />*@
+                @*@Html.Editor("Content", new { htmlAttributes = new { @class = "form-control" } })
 
                 @Html.ValidationMessageFor(m => m.Content, null, new { @class = "text-danger" })
-                <br /><br />
+                <br /><br />*@
 
                 <label>Selectati categoria</label>
                 @Html.DropDownListFor(m => m.CategoryId,
