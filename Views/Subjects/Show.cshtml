@@ -1,4 +1,4 @@
-@model Proiect.Models.Subject
+﻿@model Proiect.Models.Subject
 @* Afisarea unui subiect impreuna cu categoria din care face *@
 <div class="d-flex justify-content-center">
 
@@ -15,15 +15,15 @@
     <div class="d-flex flex-row justify-content-between">
 
 
-            <a class="btn btn-success" href="/Subjects/Edit/@Model.Id">Editeaza subiect</a>
+        <a class="btn btn-success" href="/Subjects/Edit/@Model.Id">Editeaza subiect</a>
 
-           
-                <a class="btn btn-success" href="/Subjects/ChangeCategory/@Model.Id">Schimba categoria (Admin)</a>
-            <form method="post" action="/Subjects/Delete/@Model.Id">
 
-                <button class="btn btn-danger" type="submit">Sterge subiect</button>
+        <a class="btn btn-success" href="/Subjects/ChangeCategory/@Model.Id">Schimba categoria (Admin)</a>
+        <form method="post" action="/Subjects/Delete/@Model.Id">
 
-            </form>
+            <button class="btn btn-danger" type="submit">Sterge subiect</button>
+
+        </form>
 
     </div>
 
@@ -38,7 +38,21 @@
 
 @* Afisare raspunsuri impreuna cu butoanele de editare si stergere *@
 
-@foreach (var ans in Model.Answers)
+Sorteaza dupa:
+<form method="GET">
+    <div class="mb-3">
+        <select class="form-select" name="sortOrder">
+            <option value="date_desc">Data (Cea mai noua)</option>
+            <option value="date_asc">Data (Cea mai veche)</option>
+            <option value="alphabetically_asc">Alfabetic (A-Z)</option>
+            <option value="alphabetically_desc">Alfabetic (Z-A)</option>
+        </select>
+        <button class="btn btn-outline-success" type="submit">Sorteaza</button>
+    </div>
+</form>
+
+@*am modif Model in ViewBag*@
+@foreach (var ans in ViewBag.Answers)
 {
     <div class="container">
         <div class="row">
@@ -47,7 +61,7 @@
             <div class="col-md-8">
 
                 <div>
-@*aici am modificat putin*@
+                    @*aici am modificat putin*@
                     <strong>@ans.User.NumeComplet</strong>
                     <strong>(@ans.User.Rol)</strong>
                     <p>@ans.Content</p>
@@ -59,22 +73,22 @@
                 <div class="d-flex">
 
 
-                            <div>
+                    <div>
 
-                                <a class="btn btn-outline-primary" href="/Answers/Edit/@ans.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
+                        <a class="btn btn-outline-primary" href="/Answers/Edit/@ans.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
 
-                            </div>
+                    </div>
 
-                            <div>
+                    <div>
 
-                                <form method="post" action="/Answers/Delete/@ans.Id">
+                        <form method="post" action="/Answers/Delete/@ans.Id">
 
-                                    <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Sterge</button>
+                            <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Sterge</button>
 
-                                </form>
+                        </form>
 
-                            </div>
-                       
+                    </div>
+
 
                 </div>
 
