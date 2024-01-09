@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -44,6 +44,29 @@ namespace Proiect.Controllers
                                          .Where(subject => subject.Id == id)
                                          .First();
 
+            var answersOfSubject = subject.Answers;
+
+            // SORTARE
+            var sortOrder = Convert.ToString(HttpContext.Request.Query["sortOrder"]);
+            switch (sortOrder)
+            {
+                case "date_desc":
+                    answersOfSubject = answersOfSubject.OrderByDescending(a => a.Date).ToList();
+                    break;
+                case "date_asc":
+                    answersOfSubject = answersOfSubject.OrderBy(a => a.Date).ToList();
+                    break;
+                case "alphabetically_asc":
+                    answersOfSubject = answersOfSubject.OrderBy(a => a.Content).ToList();
+                    break;
+                case "alphabetically_desc":
+                    answersOfSubject = answersOfSubject.OrderByDescending(a => a.Content).ToList();
+                    break;
+                default:
+                    answersOfSubject = answersOfSubject.OrderByDescending(a => a.Content).ToList();
+                    break;
+            }
+            ViewBag.Answers = answersOfSubject;
 
             if (TempData.ContainsKey("message"))
             {

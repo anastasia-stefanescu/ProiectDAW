@@ -54,6 +54,11 @@ namespace Proiect.Controllers
                                          .First();
             var subjectsofCateg = category.Subjects;
 
+            //////
+            ///
+           
+
+
 
             //////////////////////////////////////////////////////
             ///Partea de cautare
@@ -103,6 +108,27 @@ namespace Proiect.Controllers
             }
             ViewBag.SearchString = search;
 
+            // SORTARE
+            var sortOrder = Convert.ToString(HttpContext.Request.Query["sortOrder"]);
+            switch (sortOrder)
+            {
+                case "date_desc":
+                    subjectsofCateg = subjectsofCateg.OrderByDescending(s => s.Date).ToList();
+                    break;
+                case "date_asc":
+                    subjectsofCateg = subjectsofCateg.OrderBy(s => s.Date).ToList();
+                    break;
+                case "alphabetically_asc":
+                    subjectsofCateg = subjectsofCateg.OrderBy(s => s.Title).ToList();
+                    break;
+                case "alphabetically_desc":
+                    subjectsofCateg = subjectsofCateg.OrderByDescending(s => s.Title).ToList();
+                    break;
+                default:
+                    subjectsofCateg = subjectsofCateg.OrderByDescending(s => s.Date).ToList();
+                    break;
+            }
+
 
             // AFISARE PAGINATA
 
@@ -140,19 +166,28 @@ namespace Proiect.Controllers
             ViewBag.Subjects = paginatedSubjects;
 
             //////end PAGINARE
+            ///
 
+            // INTEGRARE SORTARE IN RUTA
             // ATENTIE AICI AM SCHIMBAT RUTA!!!!!!
             if (search != "")
             {
-                ViewBag.PaginationBaseUrl = "/Categories/Show/" + id + "?search=" + search + "&page";
+                if (sortOrder == null)
+                {
+                    ViewBag.PaginationBaseUrl = "/Categories/Show/" + id + "?search=" + search + "&page";
+                }
+                else
+                {
+                    ViewBag.PaginationBaseUrl = "/Categories/Show/" + id + "?sortOrder=" + sortOrder + "&search=" + search + "&page";
+                }
             }
             else
             {
-                ViewBag.PaginationBaseUrl = "/Categories/Show/" + id +"?page";
+                ViewBag.PaginationBaseUrl = "/Categories/Show/" + id + "?sortOrder=" + sortOrder + "&page";
             }
 
             /////////
-            return View(category); 
+            return View(category);
         }
 
         [Authorize(Roles = "Admin")]
