@@ -31,6 +31,21 @@
         </div>
     </form>
 
+Sorteaza dupa:
+<form method="GET">
+    <div class="mb-3">
+        <input type="hidden" name="search" value="@ViewBag.SearchString">
+
+        <select class="form-select" name="sortOrder">
+            <option value="date_desc">Data (Cea mai noua)</option>
+            <option value="date_asc">Data (Cea mai veche)</option>
+            <option value="alphabetically_asc">Alfabetic (A-Z)</option>
+            <option value="alphabetically_desc">Alfabetic (Z-A)</option>
+        </select>
+        <button class="btn btn-outline-success" type="submit">Sorteaza</button>
+    </div>
+</form>
+
  Paginare 
 <div>
         <nav aria-label="Page navigation example">
@@ -59,6 +74,7 @@
             </ul>
         </nav>
     </div>
+
 
 
 
