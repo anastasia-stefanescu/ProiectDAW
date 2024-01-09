@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,8 +12,16 @@ namespace Proiect.Controllers
 {
     public class SubjectsController : Controller
     {
+        // Se afiseaza lista tuturor subiectelor 
+        // HttpGet implicit
+        //[Authorize(Roles = "User,Editor,Admin")]
 
-
+        // Se afiseaza un singur articol in functie de id-ul sau 
+        // impreuna cu categoria din care face parte
+        // In plus sunt preluate si toate comentariile asociate unui articol
+        // Se afiseaza si userul care a postat articolul respectiv
+        // HttpGet
+        //
         private readonly ApplicationDbContext db;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -26,21 +34,6 @@ namespace Proiect.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
         }
-
-
-
-
-        // Se afiseaza lista tuturor articolelor impreuna cu categoria 
-        // din care fac parte
-        // Pentru fiecare articol se afiseaza si userul care a postat articolul respectiv
-        // HttpGet implicit
-        //[Authorize(Roles = "User,Editor,Admin")]
-
-        // Se afiseaza un singur articol in functie de id-ul sau 
-        // impreuna cu categoria din care face parte
-        // In plus sunt preluate si toate comentariile asociate unui articol
-        // Se afiseaza si userul care a postat articolul respectiv
-        // HttpGet implicit
 
         public IActionResult Show(int id)
         {
@@ -160,7 +153,7 @@ namespace Proiect.Controllers
 
             //de adaugat tag
 
-            if (subject.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+            if (subject.UserId == _userManager.GetUserId(User))
             {
                 return View(subject);
             }
@@ -185,7 +178,7 @@ namespace Proiect.Controllers
 
             if (ModelState.IsValid)
             {
-                if (subject.UserId == _userManager.GetUserId(User) || User.IsInRole("Admin"))
+                if (subject.UserId == _userManager.GetUserId(User))
                 {
                     subject.Title = requestSubject.Title;
                     subject.Content = requestSubject.Content;
@@ -355,31 +348,6 @@ namespace Proiect.Controllers
             // returnam lista de categorii
             return selectList;
         }
-
-        //[NonAction]
-        //public IEnumerable<SelectListItem> GetAllTags()
-        //{
-        //    // generam o lista de tipul SelectListItem fara elemente
-        //    var selectList = new List<SelectListItem>();
-
-        //    // extragem toate tag-urile din baza de date
-        //    var tags = from tag in db.Tags
-        //                     select tag;
-
-        //    // iteram prin tag-uri
-        //    foreach (var t in tags)
-        //    {
-        //        // adaugam in lista elementele necesare pentru dropdown
-        //        // id-ul categoriei si denumirea acesteia
-        //        selectList.Add(new SelectListItem
-        //        {
-        //            Value = t.Id.ToString(),
-        //            Text = t.TagName.ToString()
-        //        });
-        //    }
-        //    // returnam lista de categorii
-        //    return selectList;
-        //}
 
         // Metoda utilizata pentru exemplificarea Layout-ului
         // Am adaugat un nou Layout in Views -> Shared -> numit _LayoutNou.cshtml
