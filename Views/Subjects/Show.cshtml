@@ -1,4 +1,4 @@
-﻿@model Proiect.Models.Subject
+@model Proiect.Models.Subject
 @* Afisarea unui subiect impreuna cu categoria din care face *@
 <div class="d-flex justify-content-center">
 
@@ -14,16 +14,16 @@
 
     <div class="d-flex flex-row justify-content-between">
 
-        <a class="btn btn-success" href="/Subjects/Edit/@Model.Id">Editeaza subiect</a>
 
-        <form method="post" action="/Subjects/Delete/@Model.Id">
+            <a class="btn btn-success" href="/Subjects/Edit/@Model.Id">Editeaza subiect</a>
 
-            <button class="btn btn-danger" type="submit">Sterge subiect</button>
+           
+                <a class="btn btn-success" href="/Subjects/ChangeCategory/@Model.Id">Schimba categoria (Admin)</a>
+            <form method="post" action="/Subjects/Delete/@Model.Id">
 
-        </form>
+                <button class="btn btn-danger" type="submit">Sterge subiect</button>
 
-        <a class="btn btn-success" href="/Subjects/ChangeCategory/@Model.Id">Schimba categoria (Admin)</a>
-
+            </form>
 
     </div>
 
@@ -47,35 +47,34 @@
             <div class="col-md-8">
 
                 <div>
-
-                    @* de facut butoane cu tagurile inainte de continut *@
-
-                    <strong>@ans.User.UserName</strong>
+@*aici am modificat putin*@
+                    <strong>@ans.User.NumeComplet</strong>
+                    <strong>(@ans.User.Rol)</strong>
                     <p>@ans.Content</p>
                     <small>@ans.Date</small>
-
-
 
                 </div>
                 <br>
 
                 <div class="d-flex">
 
-                    <div>
 
-                        <a class="btn btn-outline-primary" href="/Answers/Edit/@ans.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
+                            <div>
 
-                    </div>
+                                <a class="btn btn-outline-primary" href="/Answers/Edit/@ans.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
 
-                    <div>
+                            </div>
 
-                        <form method="post" action="/Answers/Delete/@ans.Id">
+                            <div>
 
-                            <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Sterge</button>
+                                <form method="post" action="/Answers/Delete/@ans.Id">
 
-                        </form>
+                                    <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Sterge</button>
 
-                    </div>
+                                </form>
+
+                            </div>
+                       
 
                 </div>
 
