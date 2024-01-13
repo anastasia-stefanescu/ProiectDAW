@@ -2,15 +2,17 @@
 @* Afisarea unui subiect impreuna cu categoria din care face *@
 <div class="d-flex justify-content-center">
 
-    <a class="btn alert-success" href="/Categories/Show/@Model.CategoryId">Inapoi la @Model.Category.CategoryName</a>
+    <a class="btn alert-secondary" href="/Categories/Show/@Model.CategoryId">Inapoi la @Model.Category.CategoryName</a>
 
 </div>
 
 <br />
 
-<div class="card">
+<div class="subiect">
 
     @Html.Partial("SubjectInfo", Model)
+
+    <hr />
 
     <div class="d-flex flex-row justify-content-between">
 
@@ -18,7 +20,7 @@
         <a class="btn btn-success" href="/Subjects/Edit/@Model.Id">Editeaza subiect</a>
 
 
-        <a class="btn btn-success" href="/Subjects/ChangeCategory/@Model.Id">Schimba categoria (Admin)</a>
+        <a class="btn btn-outline-success" href="/Subjects/ChangeCategory/@Model.Id">Schimba categoria (Admin)</a>
         <form method="post" action="/Subjects/Delete/@Model.Id">
 
             <button class="btn btn-danger" type="submit">Sterge subiect</button>
@@ -38,61 +40,119 @@
 
 @* Afisare raspunsuri impreuna cu butoanele de editare si stergere *@
 
-Sorteaza dupa:
-<form method="GET">
-    <div class="mb-3">
-        <select class="form-select" name="sortOrder">
-            <option value="date_desc">Data (Cea mai noua)</option>
-            <option value="date_asc">Data (Cea mai veche)</option>
-            <option value="alphabetically_asc">Alfabetic (A-Z)</option>
-            <option value="alphabetically_desc">Alfabetic (Z-A)</option>
-        </select>
-        <button class="btn btn-outline-success" type="submit">Sorteaza</button>
-    </div>
-</form>
 
-@*am modif Model in ViewBag*@
-@foreach (var ans in ViewBag.Answers)
-{
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+
+        <div class="col-md-8">
+            Sorteaza raspunsuri dupa:
+            <form method="GET">
+                <div class="mb-3">
+                    <input type="hidden" name="search" value="@ViewBag.SearchString">
+
+                    <select class="form-select" name="sortOrder">
+                        <option value="date_desc">Data (Cea mai noua)</option>
+                        <option value="date_asc">Data (Cea mai veche)</option>
+                        <option value="alphabetically_asc">Alfabetic (A-Z)</option>
+                        <option value="alphabetically_desc">Alfabetic (Z-A)</option>
+                    </select>
+                    <button class="btn btn-outline-success" type="submit">Sorteaza</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    @foreach (var ans in Model.Answers)
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2"></div>
+
+                <div class="col-md-8">
+
+                    <div class="raspuns">
+
+                        <a class="btn btn-outline-light" href="/Users/Show/@ans.User.Id">
+                            @ans.User.NumeComplet ( @ans.User.Rol)
+                        </a>
+                        <br/>
+                        <p>@ans.Content</p>
+                        <small>@ans.Date</small>
+
+
+
+                    </div>
+                    <br>
+
+                    <div class="d-flex flex-row justify-content-between">
+                        <div>
+
+                            <a class="btn btn-outline-primary" href="/Answers/Edit/@ans.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
+
+                        </div>
+
+                        <div>
+
+                            <form method="post" action="/Answers/Delete/@ans.Id">
+
+                                <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Sterge</button>
+
+                            </form>
+                        </div>
+
+
+                    </div>
+
+                    <br />
+
+                </div>
+
+                <div class="col-md-2"></div>
+
+            </div>
+
+        </div>
+    }
+
+
+    @* Afisarea formularului in care se poate adauga un raspuns *@
+
     <div class="container">
+
         <div class="row">
+
             <div class="col-md-2"></div>
 
             <div class="col-md-8">
 
-                <div>
-                    @*aici am modificat putin*@
-                    <strong>@ans.User.NumeComplet</strong>
-                    <strong>(@ans.User.Rol)</strong>
-                    <p>@ans.Content</p>
-                    <small>@ans.Date</small>
+                <div class="adaugare_raspuns">
+                    <div class="card">
 
-                </div>
-                <br>
+                        <form method="post" action="/Subjects/Show/@Model.Id">
 
-                <div class="d-flex">
+                            <div class="card-body">
 
+                                <input type="hidden" name="SubjectId" value="@Model.Id" />
 
-                    <div>
+                                <label>Descriere raspuns</label>
+                                <br />
 
-                        <a class="btn btn-outline-primary" href="/Answers/Edit/@ans.Id"><i class="bi bi-pencil-square"></i>Editeaza</a>
+                                <textarea class="form-control" name="Content"></textarea>
 
-                    </div>
+                                @Html.ValidationMessage("Content", null, new { @class = "text-danger" })
 
-                    <div>
+                                <br /><br />
 
-                        <form method="post" action="/Answers/Delete/@ans.Id">
+                                <button class="btn btn-success " type="submit">Adauga raspunsul</button>
 
-                            <button class="btn btn-outline-danger" type="submit"><i class="bi bi-trash"></i>Sterge</button>
+                            </div>
 
                         </form>
 
                     </div>
-
-
                 </div>
-
-                <br />
 
             </div>
 
@@ -101,48 +161,3 @@ Sorteaza dupa:
         </div>
 
     </div>
-}
-
-
-@* Afisarea formularului in care se poate adauga un raspuns *@
-
-<div class="container">
-
-    <div class="row">
-
-        <div class="col-md-2"></div>
-
-        <div class="col-md-8">
-
-            <div class="card">
-
-                <form method="post" action="/Subjects/Show/@Model.Id">
-
-                    <div class="card-body">
-
-                        <input type="hidden" name="SubjectId" value="@Model.Id" />
-
-                        <label>Descriere raspuns</label>
-                        <br />
-
-                        <textarea class="form-control" name="Content"></textarea>
-
-                        @Html.ValidationMessage("Content", null, new { @class = "text-danger" })
-
-                        <br /><br />
-
-                        <button class="btn btn-success " type="submit">Adauga raspunsul</button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-        </div>
-
-        <div class="col-md-2"></div>
-
-    </div>
-
-</div>
