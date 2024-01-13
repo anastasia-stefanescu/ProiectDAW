@@ -19,20 +19,25 @@
 
 @foreach (var category in ViewBag.Categories)
 {
-    <h4>@category.CategoryName</h4>
-    <div class="d-flex flex-row">
-        <a class="btn alert-success" href="/Categories/Show/@category.Id">Afisare categorie</a>
-        <a class="btn alert-success" href="/Categories/Edit/@category.Id">Editare categorie</a>
-        <form method="post" action="/Categories/Delete/@category.Id">
+    
+    <div class="col-md-6">
+        <div class="categorie">
+                <h4>@category.CategoryName</h4>
+                <div class="d-flex flex-row justify-content-between">
+                    <a class="btn btn-secondary" href="/Categories/Show/@category.Id">Afisare categorie</a>
+                    <a class="btn btn-outline-secondary" href="/Categories/Edit/@category.Id">Editare categorie</a>
+                    <form method="post" action="/Categories/Delete/@category.Id">
 
-            <button class="btn btn-danger" type="submit">Sterge categoria</button>
+                        <button class="btn btn-danger" type="submit">Sterge categoria</button>
 
-        </form>
+                    </form>
+            </div>
+        </div>
     </div>
     <br />
     <hr />
     <br />
 }
 <br />
-<a class="btn btn-success" href="/Categories/New">Adauga o noua categorie</a>
+<a class="btn btn-secondary" href="/Categories/New">Adauga o noua categorie</a>
 <br />

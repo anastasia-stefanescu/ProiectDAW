@@ -5,8 +5,8 @@
 
 
 <br />
-<a class="btn alert-success" href="/Categories/Index/">Inapoi la categorii</a>
-<a class="btn btn-outline-success" href="/Subjects/New">Adauga subiect</a>
+<a class="btn alert-secondary" href="/Categories/Index/">Inapoi la categorii</a>
+<a class="btn alert-success" href="/Subjects/New">Adauga subiect</a>
 
 <br />
 <hr />
@@ -17,19 +17,17 @@
     <h2 class="@ViewBag.Alert p-3 rounded-3 text-center mb-5">@ViewBag.Message</h2>
 }
 
- Cautare Case Sensitive in Subiecte(Titlu si Continut) si Raspunsuri
+ Cautare Case Sensitive(!) in Subiecte(Titlu si Continut) si Raspunsuri
 
 <form method="GET">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control"
-                   placeholder="Search topics or keywords" name="search"
-                   value="@ViewBag.SearchString">
-            <button class="btn btn-outline-success"
-                    type="submit">
-                Search
-            </button>
-        </div>
-    </form>
+    <div class="input-group mb-3">
+        <input type="text" class="form-control"
+               placeholder="Search topics or keywords" name="search"
+               value="@ViewBag.SearchString">
+        <button class="btn btn-outline-success"
+                type="submit"> Search </button>
+    </div>
+</form>
 
 Sorteaza dupa:
 <form method="GET">
@@ -46,35 +44,34 @@ Sorteaza dupa:
     </div>
 </form>
 
- Paginare 
+ Paginare
 <div>
-        <nav aria-label="Page navigation example">
-            <ul class="pagination">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <li class="page-item">
+                <a class="page-link"
+                   href="@ViewBag.PaginationBaseUrl=1" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            @for (int i = 1; i <= ViewBag.lastPage; i++)
+            {
                 <li class="page-item">
                     <a class="page-link"
-                       href="@ViewBag.PaginationBaseUrl=1" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
+                       href="@ViewBag.PaginationBaseUrl=@i">@(i)</a>
                 </li>
-                @for (int i = 1; i <= ViewBag.lastPage; i++)
-                {
-                    <li class="page-item">
-                        <a class="page-link"
-                           href="@ViewBag.PaginationBaseUrl=@i">@(i)</a>
-                    </li>
-                }
-                <li class="page-item">
-                    <a class="page-link"
-                       href="@ViewBag.PaginationBaseUrl=@(ViewBag.lastPage)" aria-
-                       label="Next">
+            }
+            <li class="page-item">
+                <a class="page-link"
+                   href="@ViewBag.PaginationBaseUrl=@(ViewBag.lastPage)" aria-
+                   label="Next">
 
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
-
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>
 
 
 
@@ -86,7 +83,7 @@ Sorteaza dupa:
 
         @Html.Partial("SubjectInfo", subject)
 
-        <a class="btn btn-success" href="/Subjects/Show/@subject.Id">Afisare subiect</a>
+        <a class="btn alert-secondary" href="/Subjects/Show/@subject.Id">Afisare subiect</a>
 
 
 
