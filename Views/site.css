@@ -1,0 +1,61 @@
+﻿
+
+
+
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    background-color: #fffce8;
+}
+
+.navbar {
+    background-color: #dbd29c !important;
+    border-color: #CAD3C8 !important;
+    box-shadow: 0 3px 12px #636e72 !important;
+}
+
+a.nav-link {
+    color: #2c2c2c !important;
+    padding: 10px !important;
+}
+
+    a.nav-link:hover {
+        background-color: #838761 !important;
+        color: #FFFFFF !important;
+    }
+
+.raspuns {
+    background-color: #dde3af !important;
+    border-radius: 10px !important;
+    padding: 15px !important;
+}
+
+.categorie {
+    background-color: #dde3af !important;
+    border-radius: 10px !important;
+    padding: 15px !important;
+}
+
+.subiect {
+    background-color: #FFFFFF !important;
+    border-radius: 10px !important;
+    padding: 15px !important;
+}
+
+
+
+
