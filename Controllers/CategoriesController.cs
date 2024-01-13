@@ -54,11 +54,6 @@ namespace Proiect.Controllers
                                          .First();
             var subjectsofCateg = category.Subjects;
 
-            //////
-            ///
-           
-
-
 
             //////////////////////////////////////////////////////
             ///Partea de cautare
@@ -129,13 +124,11 @@ namespace Proiect.Controllers
                     break;
             }
 
-
             // AFISARE PAGINATA
 
-            // Alegem sa afisam 3 articole pe pagina
             int _perPage = 3;
 
-            // Fiind un numar variabil de subiecte, verificam de fiecare data utilizand metoda Count()
+            // Fiind un numar variabil , verificam de fiecare data utilizand metoda Count()
             int totalItems = subjectsofCateg.Count();
 
             // Se preia pagina curenta din View-ul asociat
@@ -145,7 +138,6 @@ namespace Proiect.Controllers
 
             // Pentru prima pagina offsetul o sa fie zero
             // Pentru pagina 2 o sa fie 3
-            // Asadar offsetul este egal cu numarul de articole care au fost deja afisate pe paginile anterioare
             var offset = 0;
 
             // Se calculeaza offsetul in functie de numarul paginii la care suntem
@@ -154,21 +146,15 @@ namespace Proiect.Controllers
                 offset = (currentPage - 1) * _perPage;
             }
 
-            // Se preiau articolele corespunzatoare pentru fiecare pagina la care ne aflam
-            // in functie de offset
             var paginatedSubjects = subjectsofCateg.Skip(offset).Take(_perPage);
 
             // Preluam numarul ultimei pagini
             ViewBag.lastPage = Math.Ceiling((float)totalItems / (float)_perPage);
 
-            // Trimitem articolele cu ajutorul unui ViewBag
-            //catre View-ul corespunzator
             ViewBag.Subjects = paginatedSubjects;
 
             //////end PAGINARE
-            ///
 
-            // INTEGRARE SORTARE IN RUTA
             // ATENTIE AICI AM SCHIMBAT RUTA!!!!!!
             if (search != "")
             {
@@ -178,7 +164,7 @@ namespace Proiect.Controllers
                 }
                 else
                 {
-                    ViewBag.PaginationBaseUrl = "/Categories/Show/" + id + "?sortOrder=" + sortOrder + "&search=" + search + "&page";
+                    ViewBag.PaginationBaseUrl = "/Categories/Show/" + id + "?sortOrder=" + sortOrder +  "&search=" + search + "&page";
                 }
             }
             else
@@ -187,7 +173,7 @@ namespace Proiect.Controllers
             }
 
             /////////
-            return View(category);
+            return View(category); 
         }
 
         [Authorize(Roles = "Admin")]
@@ -248,6 +234,20 @@ namespace Proiect.Controllers
             Category category = db.Categories.Include("Subjects")
                                          .Where(category => category.Id == id)
                                          .First();
+
+            var subjectsOfCateg = category.Subjects;
+            var allAnswers = db.Answers;
+
+            var answersOfSubj = from s in subjectsOfCateg
+                                join a in allAnswers on
+                                s.Id equals a.SubjectId
+                                select a;
+
+            foreach(var answer in answersOfSubj)
+            {
+                db.Answers.Remove(answer);
+            }
+
             db.Categories.Remove(category);
             TempData["message"] = "Categoria a fost stearsa";
             db.SaveChanges();

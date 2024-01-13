@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 using Proiect.Data;
 using Proiect.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Proiect.Controllers
 {
@@ -33,15 +34,21 @@ namespace Proiect.Controllers
             var users = from user in db.Users
                         orderby user.Email
                         select user;
-            
+
 
             ViewBag.UsersList = users;
-            
+
 
             return View();
         }
 
-        
+        public IActionResult Show(string id)
+        {
+            ApplicationUser user = db.Users.Find(id);
+            return View(user);
+        }
+
+
 
         public async Task<ActionResult> Edit(string id)
         {
@@ -49,12 +56,12 @@ namespace Proiect.Controllers
 
             user.AllRoles = GetAllRoles();
 
-            var roleNames = await _userManager.GetRolesAsync(user); 
+            var roleNames = await _userManager.GetRolesAsync(user);
 
             var currentUserRole = _roleManager.Roles
                                               .Where(r => roleNames.Contains(r.Name))
                                               .Select(r => r.Id)
-                                              .First(); 
+                                              .First();
             ViewBag.UserRole = currentUserRole;
 
             return View(user);
@@ -76,7 +83,7 @@ namespace Proiect.Controllers
                 {
                     await _userManager.RemoveFromRoleAsync(user, role.Name);
                 }
-               
+
                 var roleName = await _roleManager.FindByIdAsync(newRole);
                 await _userManager.AddToRoleAsync(user, roleName.ToString());
 

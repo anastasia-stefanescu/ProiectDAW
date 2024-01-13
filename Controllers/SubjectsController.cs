@@ -44,29 +44,6 @@ namespace Proiect.Controllers
                                          .Where(subject => subject.Id == id)
                                          .First();
 
-            var answersOfSubject = subject.Answers;
-
-            // SORTARE
-            var sortOrder = Convert.ToString(HttpContext.Request.Query["sortOrder"]);
-            switch (sortOrder)
-            {
-                case "date_desc":
-                    answersOfSubject = answersOfSubject.OrderByDescending(a => a.Date).ToList();
-                    break;
-                case "date_asc":
-                    answersOfSubject = answersOfSubject.OrderBy(a => a.Date).ToList();
-                    break;
-                case "alphabetically_asc":
-                    answersOfSubject = answersOfSubject.OrderBy(a => a.Content).ToList();
-                    break;
-                case "alphabetically_desc":
-                    answersOfSubject = answersOfSubject.OrderByDescending(a => a.Content).ToList();
-                    break;
-                default:
-                    answersOfSubject = answersOfSubject.OrderByDescending(a => a.Content).ToList();
-                    break;
-            }
-            ViewBag.Answers = answersOfSubject;
 
             if (TempData.ContainsKey("message"))
             {
@@ -102,7 +79,30 @@ namespace Proiect.Controllers
                                .Where(subject => subject.Id == answer.SubjectId)
                                .First();
 
-                //return Redirect("/Articles/Show/" + comm.ArticleId);
+                var answersOfSubject = subject.Answers;
+
+                // SORTARE
+                var sortOrder = Convert.ToString(HttpContext.Request.Query["sortOrder"]);
+                switch (sortOrder)
+                {
+                    case "date_desc":
+                        answersOfSubject = answersOfSubject.OrderByDescending(a => a.Date).ToList();
+                        break;
+                    case "date_asc":
+                        answersOfSubject = answersOfSubject.OrderBy(a => a.Date).ToList();
+                        break;
+                    case "alphabetically_asc":
+                        answersOfSubject = answersOfSubject.OrderBy(a => a.Content).ToList();
+                        break;
+                    case "alphabetically_desc":
+                        answersOfSubject = answersOfSubject.OrderByDescending(a => a.Content).ToList();
+                        break;
+                    default:
+                        answersOfSubject = answersOfSubject.OrderByDescending(a => a.Content).ToList();
+                        break;
+                }
+                ViewBag.Answers = answersOfSubject;
+           
                 SetAccessRights();
 
                 return View(subject);
@@ -155,26 +155,19 @@ namespace Proiect.Controllers
             }
         }
 
-        // Se editeaza un subiect existent in baza de date impreuna cu
-        // categoria din care face parte (si tagurile)
-        // Categoria se selecteaza dintr-un dropdown
-        // Se afiseaza formularul impreuna cu datele aferente articolului din baza de date
-        // Doar utilizatorii care au creat subiectul sau Admin pot edita
-        // subiectul respectiv
-        // Adminii pot edita orice subiect din baza de date
+        
         // HttpGet implicit
 
         [Authorize(Roles = "User,Admin")]
         public IActionResult Edit(int id)
         {
 
-            Subject subject = db.Subjects.Include("Category")//.Include("Tags")
+            Subject subject = db.Subjects.Include("Category")
                                         .Where(subject => subject.Id == id)
                                         .First();
 
             subject.Categ = GetAllCategories();
 
-            //de adaugat tag
 
             if (subject.UserId == _userManager.GetUserId(User))
             {
@@ -201,11 +194,13 @@ namespace Proiect.Controllers
 
             if (ModelState.IsValid)
             {
-                if (subject.UserId == _userManager.GetUserId(User))
+                if (subject.UserId == _userManager.GetUserId(User) )//|| User.IsInRole("Admin"))
                 {
-                    subject.Title = requestSubject.Title;
-                    subject.Content = requestSubject.Content;
-                    //taguri
+                    //if (subject.UserId == _userManager.GetUserId(User))
+                    //{
+                        subject.Title = requestSubject.Title;
+                        subject.Content = requestSubject.Content;
+                    //}
                     subject.CategoryId = requestSubject.CategoryId;
                     TempData["message"] = "Subiectul a fost modificat";
                     TempData["messageType"] = "alert-success";
@@ -247,7 +242,7 @@ namespace Proiect.Controllers
             {
                 TempData["message"] = "Nu aveti dreptul sa schimbati categoria daca nu sunteti admin";
                 TempData["messageType"] = "alert-danger";
-                return Redirect("/Subject/Show/" + subject.Id);
+                return Redirect("/Categories/Show/" + subject.CategoryId);
             }
 
         }
@@ -260,24 +255,26 @@ namespace Proiect.Controllers
         {
             Subject subject = db.Subjects.Find(id);
             requestSubject.Categ = GetAllCategories();
+            //requestSubject.Title = subject.Title;
+            //requestSubject.Content = subject.Content;
 
             if (ModelState.IsValid)
             {
                 if (User.IsInRole("Admin"))
                 {
-                    subject.Title = subject.Title;
-                    subject.Content = subject.Content;
+                    //subject.Title = subject.Title;
+                    //subject.Content = subject.Content;
                     subject.CategoryId = requestSubject.CategoryId;
-                    TempData["message"] = "Subiectul a fost modificat";
+                    TempData["message"] = "Subiectul a fost mutat in alta categorie";
                     TempData["messageType"] = "alert-success";
                     db.SaveChanges();
-                    return Redirect("/Subject/Show/" + subject.Id);
+                    return Redirect("/Categories/Show/" + subject.CategoryId);
                 }
                 else
                 {
                     TempData["message"] = "Nu aveti dreptul sa schimbati categoria daca nu sunteti admin";
                     TempData["messageType"] = "alert-danger";
-                    return Redirect("/Subject/Show/" + subject.Id);
+                    return Redirect("/Categories/Show/" + subject.CategoryId);
                 }
             }
             else
