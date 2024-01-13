@@ -3,33 +3,21 @@
 <br />
 
 <div class="row">
-@foreach (var user in ViewBag.UsersList)
-{
-    <div class="col-4 mb-4">
+    @foreach (var user in ViewBag.UsersList)
+    {
+        <div class="col-4 mb-4">
             <div class="card" style="height:100%; width: 100%;">
-        
-            <div class="card-body d-flex justify-content-between flex-column">
-                <div>
+
+                <div class="card-body d-flex justify-content-between flex-column">
+                    <div>
                         <p><i class="bi bi-person"> </i>Email utilizator: @user.Email</p>
-                
-
-                 
-
+                    </div>
+                    <div> <a class="btn btn-sm btn-success" href="/Users/Edit/@user.Id">Modifica drepturi</a> </div>
                 </div>
-                
 
-                <div> <a class="btn btn-sm btn-success" href="/Users/Edit/@user.Id">Modifica drepturi</a> </div>
-
-
-               
             </div>
-
-         </div>
-    </div>
-}
-   
+        </div>
+    }
 </div>
-
-    <br />
-    <br />
-
+<br />
+<br />
