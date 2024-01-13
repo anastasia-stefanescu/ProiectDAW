@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Proiect.Data.Migrations;
+using Proiect.Migrations;
 using Proiect.Data;
 using System;
 using System.Collections.Generic;
@@ -19,26 +19,26 @@ namespace Proiect.Models
             {
                 if (context.Roles.Any())
                 {
-                    return; 
+                    return;
                 }
-                
+
 
                 // roluri pentru utilizator inregistrat si administrator
                 // vizitator neinregistrat nu are rol
                 context.Roles.AddRange(
                 new IdentityRole
                 {
-                    Id = "e440db26-c31d-49d0-a975-830dec48b660", 
-                    Name = "Admin", 
-                    NormalizedName = "Admin".ToUpper() 
-                },            
+                    Id = "e440db26-c31d-49d0-a975-830dec48b660",
+                    Name = "Admin",
+                    NormalizedName = "Admin".ToUpper()
+                },
                 new IdentityRole
                 {
                     Id = "e440db26-c31d-49d0-a975-830dec48b661",
-                    Name = "User", 
+                    Name = "User",
                     NormalizedName = "User".ToUpper()
                 });
-              
+
 
                 var hasher = new PasswordHasher<ApplicationUser>();
                 context.Users.AddRange(

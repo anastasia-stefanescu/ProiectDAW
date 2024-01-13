@@ -16,8 +16,6 @@ namespace Proiect.Models
 
         public DateTime Date { get; set; }
 
-        //public virtual ICollection<Tag>? Tags { get; set; }
-
         public int? SubjectId { get; set; }
 
         public virtual Subject? Subject { get; set; }
