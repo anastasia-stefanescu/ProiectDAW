@@ -3,18 +3,27 @@
 
 <div class="card-body">
 
-    <h3 class="card-title alert-success py-3 px-3 rounded-2">@Model.Title</h3>
-
-    <div class="card-text">@Model.Content</div>
+    <h3>@Model.Title</h3>
+    <hr />
 
     <div class="d-flex justify-content-between flex-row mt-5">
 
-        <div>
-        <i class="bi bi-globe"></i> 
-            <strong>@Model.User.NumeComplet</strong>
 
-        <span class="alert-success">@Model.Date</span>
+        <div>
+
+            @*<i class="bi bi-globe"> </i>*@
+            <a class="btn btn-light btn-small" href="/Users/Show/@Model.User.Id">
+                @Model.User.NumeComplet ( @Model.User.Rol) </a>
+            <strong> at </strong>
+            <span class="alert-secondary"> @Model.Date</span>
+        </div>
+
+        
 
     </div>
+
+    <div class="card-body">@Model.Content</div>
+
+
 
 </div>
